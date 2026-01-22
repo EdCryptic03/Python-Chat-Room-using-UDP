@@ -33,9 +33,7 @@ while True:
     if message == '!q':
         exit()
     else:
-        # Send typing indicator before the message
         client.sendto(f"TYPING: {name}".encode(), (ip, 6666))
-        # Small delay to show typing indicator
         time.sleep(0.1)
-        # Send the actual message
         client.sendto(f"{name}: {message}".encode(), (ip, 6666))
+
