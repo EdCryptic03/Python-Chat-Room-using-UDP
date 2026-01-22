@@ -7,6 +7,13 @@ import threading
 import queue
 from datetime import datetime 
 
+""" Firstly, I created an empty list for the clients.
+ Secondly, I created receive and broadcast functions to receive messages from the clients to the server 
+ and then using the broadcast functions to broadcast the message to all the other clients connected to the server.
+
+ Finally, I used threaing to avoid collapsing of many clients joining the server and eventually letting the server crash. Threading allowed many clients to join the server simultaneously.
+"""
+
 messages = queue.Queue()
 clients = [] 
 
@@ -39,16 +46,16 @@ def broadcast():
                         timestamp = datetime.now().strftime("%H:%M:%S")
                         server.sendto(f"[{timestamp}] {name} joined!".encode(), client)
                     elif message.decode().startswith("TYPING:"):
-                        # Typing indicator
+                 
                         typing_user = message.decode()[message.decode().index(":")+1:].strip()
-                        # Broadcast typing indicator to all other clients (not the sender)
+              
                         for other_client in clients:
                             if other_client != addr:
                                 server.sendto(f"{typing_user} is typing...".encode(), other_client)
                     else:
                         decoded_msg = message.decode()
                         timestamp = datetime.now().strftime("%H:%M:%S")
-                        # Add timestamp to the message
+                  
                         if ":" in decoded_msg:
                             parts = decoded_msg.split(":", 1)
                             username = parts[0]
@@ -67,6 +74,6 @@ t1.start()
 t2.start()
 
 
-        # Send the actual message
         client.sendto(f"{name}: {message}".encode(), (ip, 6666))
+
 
